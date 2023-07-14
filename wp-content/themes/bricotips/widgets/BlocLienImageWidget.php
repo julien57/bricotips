@@ -5,16 +5,16 @@
 /**
  * Adds Foo_Widget widget.
  */
-class Image_Titre_Widget extends WP_Widget
+class Bloc_Lien_Image_Widget extends WP_Widget
 {
 	/**
 	 * Register widget with WordPress.
 	 */
 	public function __construct() {
 		parent::__construct(
-			'image_titre_widget', // Base ID
-			'Widget Image Titre', // Name
-			array( 'description' => __( 'Widget d\'image avec titre', 'text_domain' ), ) // Args
+			'bloc_lien_image_widget', // Base ID
+			'Widget Bloc Lien / Image', // Name
+			array( 'description' => __( 'Widget lien / image', 'text_domain' ), ) // Args
 		);
 	}
 
@@ -30,14 +30,16 @@ class Image_Titre_Widget extends WP_Widget
 		extract( $args );
 		$title = $instance['title'];
 		$urlImage = $instance['url_image'];
+		$link = $instance['link'];
 
 		echo $before_widget;
 
 		if ( ! empty( $urlImage ) ) {
 			?>
-			<div class="image-titre-widget">
-				<img src="<?= $urlImage ?>" alt="<?= $title ?>">
-				<div class="titre"><?= $title ?></div>
+			<div class="bloc-lien-image-widget">
+                <a href="<?= $link ?>" class="link-bg" style="background:url(<?= $urlImage ?>)no-repeat center;">
+                    <span><?= $title ?></span>
+                </a>
 			</div>
 			<?php
 		}
@@ -53,18 +55,9 @@ class Image_Titre_Widget extends WP_Widget
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		if ( isset( $instance[ 'title' ] ) ) {
-			$title = $instance[ 'title' ];
-		}
-		else {
-			$title = "Titre d'image";
-		}
-		if ( isset( $instance[ 'url_image' ] ) ) {
-			$urlImage = $instance[ 'url_image' ];
-		}
-		else {
-			$urlImage = "";
-		}
+        $title = isset($instance[ 'title' ]) ? $instance[ 'title' ] : '';
+		$urlImage = isset($instance[ 'url_image' ]) ? $instance[ 'url_image' ] : '';
+		$link = isset($instance[ 'link' ]) ? $instance[ 'link' ] : '';
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_name( 'title' ); ?>">Titre</label>
@@ -73,6 +66,10 @@ class Image_Titre_Widget extends WP_Widget
 		<p>
 			<label for="<?php echo $this->get_field_name( 'url_image' ); ?>">Url de L'image</label>
 			<input class="widefat" id="<?php echo $this->get_field_id( 'url_image' ); ?>" name="<?php echo $this->get_field_name( 'url_image' ); ?>" type="text" value="<?php echo esc_attr( $urlImage ); ?>" />
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_name( 'link' ); ?>">Lien</label>
+			<input class="widefat" id="<?php echo $this->get_field_id( 'link' ); ?>" name="<?php echo $this->get_field_name( 'link' ); ?>" type="url" value="<?php echo esc_attr( $link ); ?>" />
 		</p>
 		<?php
 	}
@@ -91,6 +88,7 @@ class Image_Titre_Widget extends WP_Widget
 		$instance = array();
 		$instance['title'] = ( !empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
 		$instance['url_image'] = ( !empty( $new_instance['url_image'] ) ) ? strip_tags( $new_instance['url_image'] ) : '';
+		$instance['link'] = ( !empty( $new_instance['link'] ) ) ? strip_tags( $new_instance['link'] ) : '';
 
 		return $instance;
 	}
